@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media post and caption generator using gen ai Krishna Dubey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a; /* Slate 900 */
+            --card-bg-color: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --primary-purple: #8b5cf6;
+            --primary-pink: #ec4899;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; /* Hide scrollbars from the body */
+        }
+
+        .main-container {
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Icons */
+        .icon-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .icon-background span {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            bottom: -150px;
+            animation: floatUp 25s linear infinite;
+            opacity: 0.2;
+        }
+
+        /* Assigning different icons */
+        .icon-background span:nth-child(1) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png'); left: 25%; animation-duration: 20s; animation-delay: 0s; }
+        .icon-background span:nth-child(2) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg'); left: 10%; animation-duration: 15s; animation-delay: 2s; width: 25px; height: 25px; }
+        .icon-background span:nth-child(3) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg'); left: 70%; animation-duration: 28s; animation-delay: 4s; }
+        .icon-background span:nth-child(4) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png'); left: 40%; animation-duration: 22s; animation-delay: 0s; width: 30px; height: 30px; }
+        .icon-background span:nth-child(5) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png'); left: 65%; animation-duration: 18s; animation-delay: 1s; }
+        .icon-background span:nth-child(6) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg'); left: 75%; animation-duration: 12s; animation-delay: 3s; }
+        .icon-background span:nth-child(7) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg'); left: 85%; animation-duration: 30s; animation-delay: 7s; width: 15px; height: 15px; }
+        .icon-background span:nth-child(8) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png'); left: 50%; animation-duration: 16s; animation-delay: 5s; }
+        .icon-background span:nth-child(9) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png'); left: 20%; animation-duration: 19s; animation-delay: 2s; width: 22px; height: 22px; }
+        .icon-background span:nth-child(10) { background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/ce/X_logo_2023.svg'); left: 90%; animation-duration: 24s; animation-delay: 10s; }
+
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.2; }
+            100% { transform: translateY(-105vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Glassmorphism Card Effect */
+        .glass-card {
+            background: var(--card-bg-color);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Title Shimmer Effect */
+        .shimmer-title {
+            background: linear-gradient(to right, var(--primary-purple) 20%, var(--primary-pink) 40%, var(--primary-pink) 60%, var(--primary-purple) 80%);
+            background-size: 200% auto;
+            color: #000;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        /* Result Card Flip Animation */
+        @keyframes flipIn {
+            from {
+                transform: perspective(400px) rotateY(90deg);
+                opacity: 0;
+            }
+            to {
+                transform: perspective(400px) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+        .flip-in {
+            animation: flipIn 0.6s ease-out;
+        }
+        
+        /* Custom scrollbar for better aesthetics */
+        .main-container::-webkit-scrollbar { width: 8px; }
+        .main-container::-webkit-scrollbar-track { background: #1e293b; }
+        .main-container::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        .main-container::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="text-white antialiased">
+
+    <div class="icon-background">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="main-container container mx-auto px-4 py-8 md:py-12 relative z-10">
+        <!-- Header Section -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold shimmer-title">
+                Krishna's 
+                Social Media Post and Caption Generator 
+                using Gen AI
+            </h1>
+            <p class="text-gray-400 mt-2 text-lg">Generative AI Project</p>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="max-w-4xl mx-auto">
+            <!-- Input Form Card -->
+            <div class="glass-card p-6 md:p-8 rounded-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column: Topic & Platform -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="topic" class="block text-sm font-medium text-gray-300 mb-2">Topic / Product / Idea</label>
+                            <textarea id="topic" rows="4" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200" placeholder="e.g., 'Launch of a new sustainable coffee blend'"></textarea>
+                        </div>
+                        <div>
+                            <label for="platform" class="block text-sm font-medium text-gray-300 mb-2">Target Platform</label>
+                            <select id="platform" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200">
+                                <option value="Instagram">Instagram</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="X / Twitter">X / Twitter</option>
+                                <option value="LinkedIn">LinkedIn</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Right Column: Tone & Generation Button -->
+                    <div class="space-y-6 flex flex-col">
+                        <div>
+                            <label for="tone" class="block text-sm font-medium text-gray-300 mb-2">Tone of Voice</label>
+                            <select id="tone" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200">
+                                <option>Casual & Friendly</option>
+                                <option>Professional & Polished</option>
+                                <option>Witty & Humorous</option>
+                                <option>Inspirational & Uplifting</option>
+                                <option>Sales-oriented & Persuasive</option>
+                            </select>
+                        </div>
+                        <div class="flex-grow flex items-end">
+                            <button id="generateBtn" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 active:scale-95 transition-transform duration-300 flex items-center justify-center">
+                                <svg id="generateIcon" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                                <span id="generateBtnText"> Click here to Generate !!!</span>
+                                <svg id="loadingSpinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="mt-10">
+                <!-- Generated posts will be injected here -->
+            </div>
+            
+            <!-- Error Message Box -->
+            <div id="errorMessage" class="hidden mt-6 bg-red-900 border border-red-700 text-red-200 px-4 py-3 rounded-lg relative" role="alert">
+                <strong class="font-bold">Oops!</strong>
+                <span class="block sm:inline" id="errorText">Something went wrong. Please try again.</span>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // DOM element references
+        const generateBtn = document.getElementById('generateBtn');
+        const generateBtnText = document.getElementById('generateBtnText');
+        const generateIcon = document.getElementById('generateIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const resultsContainer = document.getElementById('results');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        // Platform icon mapping
+        const platformIcons = {
+            "Instagram": `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="url(#instagram-gradient)"><defs><radialGradient id="instagram-gradient" cx="0.3" cy="1" r="1"><stop offset="0" stop-color="#FFDC80"/><stop offset="0.1" stop-color="#FCAF45"/><stop offset="0.4" stop-color="#F77737"/><stop offset="0.6" stop-color="#F56040"/><stop offset="0.8" stop-color="#FD1D1D"/><stop offset="1" stop-color="#D62976"/></radialGradient></defs><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>`,
+            "Facebook": `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="#1877F2"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg>`,
+            "X / Twitter": `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 16 16" fill="#FFFFFF"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-1.148 13.5h1.284L5.084 2.158H3.715l7.74 12.092Z"/></svg>`,
+            "LinkedIn": `<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0 0 13 14.19a.66.66 0 0 0 0 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>`
+        };
+
+        // Event listener for the generate button
+        generateBtn.addEventListener('click', handleGeneration);
+
+        async function handleGeneration() {
+            // 1. Get user inputs
+            const topic = document.getElementById('topic').value.trim();
+            const platform = document.getElementById('platform').value;
+            const tone = document.getElementById('tone').value;
+
+            if (!topic) {
+                showError("Please enter a topic to generate a post.");
+                return;
+            }
+
+            // 2. Update UI to show loading state
+            setLoadingState(true);
+            resultsContainer.innerHTML = ''; // Clear previous results
+            hideError();
+
+            try {
+                // 3. Construct the prompt for the AI model
+                const prompt = `
+                    You are an expert social media marketing assistant. Your task is to generate three distinct and creative social media posts based on a user's request.
+
+                    **User Request Details:**
+                    - **Topic:** "${topic}"
+                    - **Target Platform:** "${platform}"
+                    - **Desired Tone:** "${tone}"
+
+                    **Instructions:**
+                    1.  Generate three unique post options.
+                    2.  For each option, provide a compelling caption that is perfectly tailored for the "${platform}" platform. If the platform is X/Twitter, keep it concise.
+                    3.  The tone of each post must be strictly "${tone}".
+                    4.  After each caption, include a relevant set of 5-7 popular hashtags.
+                    5.  Format your entire response as a single JSON array, where each object in the array represents a post and has two keys: "caption" and "hashtags". The "hashtags" value should be a single string with each hashtag starting with '#'.
+
+                    **Example JSON format:**
+                    [
+                        {
+                            "caption": "This is the first amazing caption. ✨",
+                            "hashtags": "#example #socialmedia #generation"
+                        },
+                        {
+                            "caption": "Here's a second, completely different take on the topic. 🚀",
+                            "hashtags": "#creative #marketing #content"
+                        }
+                    ]
+                `;
+
+                // 4. Call the Gemini API
+                const apiKey = "AIzaSyAWz0IXh1SpFGAfdMyRuhej4-kLfJZ5lck"; // API key is handled by the environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                    }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(`API error: ${response.status} ${response.statusText}. ${errorData.error.message}`);
+                }
+
+                const result = await response.json();
+
+                // 5. Process and display the results
+                if (result.candidates && result.candidates.length > 0) {
+                    const content = result.candidates[0].content.parts[0].text;
+                    const posts = JSON.parse(content);
+                    displayResults(posts, platform);
+                } else {
+                    throw new Error("No content generated. The model might have returned an empty response.");
+                }
+
+            } catch (err) {
+                console.error("Generation failed:", err);
+                showError(err.message || "An unexpected error occurred. Please check the console for details.");
+            } finally {
+                // 6. Reset UI from loading state
+                setLoadingState(false);
+            }
+        }
+
+        function setLoadingState(isLoading) {
+            generateBtn.disabled = isLoading;
+            if (isLoading) {
+                generateBtnText.classList.add('hidden');
+                generateIcon.classList.add('hidden');
+                loadingSpinner.classList.remove('hidden');
+            } else {
+                generateBtnText.classList.remove('hidden');
+                generateIcon.classList.remove('hidden');
+                loadingSpinner.classList.add('hidden');
+            }
+        }
+        
+        function displayResults(posts, platform) {
+            resultsContainer.innerHTML = ''; // Clear again just in case
+            posts.forEach((post, index) => {
+                const postElement = document.createElement('div');
+                postElement.className = 'glass-card p-6 rounded-xl mb-4 flip-in shadow-lg';
+                postElement.style.animationDelay = `${index * 150}ms`;
+
+                const fullPostText = `${post.caption}\n\n${post.hashtags}`;
+                const platformIconHTML = platformIcons[platform] || '';
+
+                postElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-3">
+                            ${platformIconHTML}
+                            <h3 class="text-lg font-semibold text-purple-300">Option ${index + 1}</h3>
+                        </div>
+                        <button class="copy-btn bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold py-2 px-3 rounded-lg transition-colors duration-200 text-sm flex items-center" data-text="${escape(fullPostText)}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                            <span class="btn-copy-text">Copy</span>
+                        </button>
+                    </div>
+                    <p class="text-slate-300 whitespace-pre-wrap mb-4">${post.caption}</p>
+                    <p class="text-pink-400 font-medium">${post.hashtags}</p>
+                `;
+                resultsContainer.appendChild(postElement);
+            });
+            
+            // Add event listeners to the new copy buttons
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', handleCopy);
+            });
+        }
+        
+        function handleCopy(event) {
+            const button = event.currentTarget;
+            const textToCopy = unescape(button.getAttribute('data-text'));
+            
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                const copyText = button.querySelector('.btn-copy-text');
+                copyText.textContent = 'Copied!';
+                button.classList.add('bg-green-700', 'hover:bg-green-600');
+                setTimeout(() => {
+                    copyText.textContent = 'Copy';
+                    button.classList.remove('bg-green-700', 'hover:bg-green-600');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                const copyText = button.querySelector('.btn-copy-text');
+                copyText.textContent = 'Failed!';
+                 setTimeout(() => {
+                    copyText.textContent = 'Copy';
+                }, 2000);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        function hideError() {
+            errorMessage.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

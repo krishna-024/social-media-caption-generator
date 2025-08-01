@@ -1,8 +1,5 @@
 # 📘 Social Media Post & Caption Generator using Gen AI
 
-## 🔗 Live Demo
-*Coming soon / [Insert your deployment link if hosted]*
-
 ## 📄 Description
 
 The **Social Media Post & Caption Generator** is a web-based tool that leverages **Google's Gemini API** to generate engaging, platform-specific social media captions and hashtags. This project streamlines the content creation process for platforms like **Instagram, Facebook, X (Twitter), and LinkedIn**.

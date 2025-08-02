@@ -38,9 +38,6 @@ The **Social Media Post & Caption Generator** is a web-based tool that leverages
 
 4. The app renders results instantly with a polished, interactive UI.
 
-## 📷 Screenshots
-
-*(Add screenshots here of the homepage, input form, and generated results UI)*
 
 ## 🚀 Getting Started
 
